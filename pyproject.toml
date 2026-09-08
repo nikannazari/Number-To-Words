@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "num-to-words"
+version = "1.0.0"
+description = "Convert integers into English words."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+]
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
