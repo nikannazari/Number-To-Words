@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "num-to-words"
-version = "1.0.0"
+version = "1.1.0"
 description = "Convert integers into English words."
 readme = "README.md"
 requires-python = ">=3.10"

@@ -1,6 +1,4 @@
-def validate_number(
-    number: int,
-) -> bool:
+def validate_number(number: int) -> bool:
     """
     Validate an integer input.
 
@@ -8,19 +6,13 @@ def validate_number(
     :return: True if valid.
     :rtype: bool
     """
-
-    if not isinstance(number, int):
-
-        raise TypeError(
-            "Number must be an integer."
-        )
+    if type(number) is not int:
+        raise TypeError("Number must be an integer.")
 
     return True
 
 
-def parse_number(
-    value: str,
-) -> int:
+def parse_number(value: str) -> int:
     """
     Convert a string input into an integer.
 
@@ -28,24 +20,18 @@ def parse_number(
     :return: Parsed integer.
     :rtype: int
     """
-
     value = value.strip()
 
     if not value:
-
-        raise ValueError(
-            "Number cannot be empty."
-        )
+        raise ValueError("Number cannot be empty.")
 
     try:
-
         number = int(value)
-
-    except ValueError:
-
+    except ValueError as error:
         raise ValueError(
-            "Invalid number. "
-            "Please enter an integer."
-        )
+            "Invalid number. Please enter an integer."
+        ) from error
+
+    validate_number(number)
 
     return number

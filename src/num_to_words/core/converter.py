@@ -48,79 +48,56 @@ class NumberToWordsConverter:
         result = f"{UNDER_20[hundreds]} Hundred"
 
         if remainder:
-            result += " and " + self._convert_under_thousand(remainder)
+            result += f" and {self._convert_under_thousand(remainder)}"
 
         return result
 
     def _convert_large_number(self, number: int) -> str:
         chunks = []
-
         scale_index = 0
 
         while number > 0:
             chunk = number % 1000
 
             if chunk:
-                chunk_words = self._convert_under_thousand(chunk)
-
-                if scale_index > 0:
-                    chunk_words += f" {SCALES[scale_index]}"
-
-                chunks.append(chunk_words)
+                chunks.append(
+                    (
+                        chunk,
+                        scale_index,
+                        self._convert_under_thousand(chunk),
+                    )
+                )
 
             number //= 1000
             scale_index += 1
 
+        if scale_index > len(SCALES):
+            raise ValueError(
+                "Number is too large to convert."
+            )
+
         chunks.reverse()
 
-        result = " ".join(chunks)
+        parts = []
 
-        return self._add_and(result, chunks)
+        for chunk, index, words in chunks:
+            if index > 0:
+                words = f"{words} {SCALES[index]}"
 
-    def _add_and(self, result: str, chunks: list[str]) -> str:
-        """
-        Add 'and' according to British English number formatting.
-        """
-        if len(chunks) < 2:
-            return result
+            parts.append(words)
 
-        last_chunk = chunks[-1]
+        result = " ".join(parts)
 
-        last_chunk_number = self._extract_chunk_number(last_chunk)
+        last_chunk = chunks[-1][0]
 
-        if last_chunk_number < 100:
-            parts = result.rsplit(" ", len(last_chunk.split()) - 1)
-
-            if len(parts) > 1:
-                prefix = " ".join(parts[:-1])
-                suffix = parts[-1]
-                return f"{prefix} and {suffix}"
+        if len(chunks) > 1 and last_chunk < 100:
+            result = result.replace(
+                f" {self._convert_under_thousand(last_chunk)}",
+                f" and {self._convert_under_thousand(last_chunk)}",
+                1,
+            )
 
         return result
-
-    @staticmethod
-    def _extract_chunk_number(chunk: str) -> int:
-        """
-        Convert the final numeric chunk back to an approximate integer
-        for deciding whether 'and' is needed.
-        """
-        words = chunk.split()
-
-        if not words:
-            return 0
-
-        if "Hundred" in words:
-            return 100
-
-        for index, word in enumerate(UNDER_20):
-            if word in words:
-                return index
-
-        for index, word in enumerate(TENS):
-            if word in words:
-                return index * 10
-
-        return 0
 
 
 def num_to_words(number: int) -> str:

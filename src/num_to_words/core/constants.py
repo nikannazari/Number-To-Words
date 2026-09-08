@@ -44,4 +44,9 @@ SCALES = [
     "Trillion",
     "Quadrillion",
     "Quintillion",
+    "Sextillion",
+    "Septillion",
+    "Octillion",
+    "Nonillion",
+    "Decillion",
 ]
